@@ -11,6 +11,7 @@ public class PythonType extends PythonObject {
 
     private final String name;
     private final PythonObject base;
+    private List<PythonObject> mro;
 
     /**
      * Declares a new Python type. Equivalent to Python `class «name»(«base»):`
@@ -41,7 +42,13 @@ public class PythonType extends PythonObject {
 
     @Override
     protected List<PythonObject> buildMRO() {
-        throw new UnsupportedOperationException("not implemented yet");
+        mro = new ArrayList<PythonObject>();
+        mro.add(this);
+        if(base != null) {
+            List<PythonObject> base_mro = base.getMRO();
+            mro.addAll(base_mro);
+        }
+        return mro;
     }
 
     /**
@@ -49,7 +56,9 @@ public class PythonType extends PythonObject {
      * this PythonType.
      */
     public PythonObject instantiate() {
-        throw new UnsupportedOperationException("not implemented yet");
+
+        PythonObject object = new PythonObject(this);
+        return object;
     }
 
     @Override
